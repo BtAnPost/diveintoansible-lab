@@ -148,14 +148,21 @@ services:
     networks:
      - diveinto.io
 
-  windows1:
-    hostname: windows1
-    container_name: windows1
-    image: mcr.microsoft.com/windows/servercore:ltsc2022
-    ports:
-      - "5000:3389" # Example: RDP port
-    networks:
-      - diveinto.io
+  # Windows host - requires Windows Docker host
+  # This container only runs on Windows machines with Docker for Windows
+  # or Windows Server with Docker installed in Windows container mode
+  # Uncomment below if running on Windows Docker host
+  #
+  # windows1:
+  #   hostname: windows1
+  #   container_name: windows1
+  #   image: mcr.microsoft.com/windows/servercore:ltsc2022
+  #   ports:
+  #     - "5000:3389"  # RDP port
+  #   environment:
+  #     - ANSIBLE_USER=Administrator
+  #   networks:
+  #     - diveinto.io
 
 networks:
   diveinto.io:
