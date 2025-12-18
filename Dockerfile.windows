@@ -32,8 +32,8 @@ RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
     sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 
-# Install WinRM-like service (using SSH as transport)
-RUN pip3 install pywinrm requests-kerberos requests-ntlm
+# Install Python packages for Ansible (without Kerberos - using SSH/basic auth instead)
+RUN pip3 install pywinrm requests-ntlm
 
 # Expose SSH port
 EXPOSE 22
