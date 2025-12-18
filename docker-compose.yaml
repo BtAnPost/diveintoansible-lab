@@ -148,14 +148,14 @@ services:
     networks:
      - diveinto.io
 
-  # windows1:
-  #   hostname: windows1
-  #   container_name: windows1
-  #   image: mcr.microsoft.com/windows/servercore:ltsc2022
-  #   ports:
-  #     - "5000:3389" # Example: RDP port
-  #   networks:
-  #     - diveinto.io
+  windows1:
+    hostname: windows1
+    container_name: windows1
+    image: mcr.microsoft.com/windows/servercore:ltsc2022
+    ports:
+      - "5000:3389" # Example: RDP port
+    networks:
+      - diveinto.io
 
 networks:
   diveinto.io:
