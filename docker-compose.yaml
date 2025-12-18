@@ -148,21 +148,22 @@ services:
     networks:
      - diveinto.io
 
-  # Windows host - requires Windows Docker host
-  # This container only runs on Windows machines with Docker for Windows
-  # or Windows Server with Docker installed in Windows container mode
-  # Uncomment below if running on Windows Docker host
-  #
-  # windows1:
-  #   hostname: windows1
-  #   container_name: windows1
-  #   image: mcr.microsoft.com/windows/servercore:ltsc2022
-  #   ports:
-  #     - "5000:3389"  # RDP port
-  #   environment:
-  #     - ANSIBLE_USER=Administrator
-  #   networks:
-  #     - diveinto.io
+  # Windows-like container (Linux-based for Ansible testing)
+  windows1:
+    build:
+      context: .
+      dockerfile: Dockerfile.windows
+    hostname: windows1
+    container_name: windows1
+    ports:
+      - "${WINDOWS1_PORT_SSHD}:2228"
+    privileged: true
+    volumes:
+      - ${CONFIG}:/config
+      - ${ANSIBLE_HOME}/shared:/shared
+      - ${ANSIBLE_HOME}/windows1/ansible:/home/windows
+    networks:
+      - diveinto.io
 
 networks:
   diveinto.io:

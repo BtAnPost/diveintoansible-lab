@@ -1,0 +1,42 @@
+FROM ubuntu:22.04
+
+# Install necessary packages for Windows-like container
+RUN apt-get update && apt-get install -y \
+    openssh-server \
+    python3 \
+    python3-pip \
+    curl \
+    wget \
+    git \
+    sudo \
+    vim \
+    net-tools \
+    iputils-ping \
+    dnsutils \
+    telnet \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create windows user (simulating Administrator)
+RUN useradd -m -s /bin/bash windows && \
+    echo "windows:password" | chpasswd && \
+    echo "windows ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Setup SSH
+RUN mkdir -p /run/sshd && \
+    mkdir -p /home/windows/.ssh && \
+    chmod 700 /home/windows/.ssh && \
+    chown windows:windows /home/windows/.ssh
+
+# Configure SSH for password authentication
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+
+# Install WinRM-like service (using SSH as transport)
+RUN pip3 install pywinrm requests-kerberos requests-ntlm
+
+# Expose SSH port
+EXPOSE 22
+
+# Start SSH service
+CMD ["/usr/sbin/sshd", "-D"]
