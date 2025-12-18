@@ -30,7 +30,8 @@ RUN mkdir -p /run/sshd && \
 # Configure SSH for password authentication
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
     sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
-    sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+    sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # Install Python packages for Ansible (without Kerberos - using SSH/basic auth instead)
 RUN pip3 install pywinrm requests-ntlm
@@ -38,5 +39,7 @@ RUN pip3 install pywinrm requests-ntlm
 # Expose SSH port
 EXPOSE 22
 
-# Start SSH service
-CMD ["/usr/sbin/sshd", "-D"]
+# Create startup script to ensure SSH runs
+RUN echo '#!/bin/bash\n/usr/sbin/sshd -D' > /entrypoint.sh && chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
